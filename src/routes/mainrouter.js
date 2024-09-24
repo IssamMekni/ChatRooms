@@ -9,7 +9,7 @@ const auth = require ("./auth")
 
 router.use("/auth",auth);
 router.use("/home/chatroom",chatroom);
-router.use("/home/chatroom",message);
+router.use("/home/message",message);
 
 module.exports = router ;
 

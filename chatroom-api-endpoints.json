@@ -1,0 +1,282 @@
+{
+    "endpoints": [
+      
+        
+      {
+        "path": "/auth/register",
+        "method": "POST",
+        "description": "Register a new user.",
+        "requestBody": {
+          "username": "string (required)",
+          "password": "string (required)"
+        },
+        "response": {
+          "201": { "message": "User created successfully" },
+          "400": { "message": "This username is already taken" },
+          "500": { "message": "Error creating user" }
+        }
+      },
+
+
+
+
+      {
+        "path": "/auth/login",
+        "method": "POST",
+        "description": "Log in an existing user.",
+        "requestBody": {
+          "username": "string (required)",
+          "password": "string (required)"
+        },
+        "response": {
+          "200": { "message": "Login successful" , "userID": "id"},
+          "401": { "message": "wrong password" },
+          "404": { "message": "This user does not exist" },
+          "500": { "message": "Error logging in" }
+        }
+      },
+
+
+
+
+      {
+        "path": "/home/chatroom/joinedroom",
+        "method": "GET",
+        "description": "Get a list of chatrooms the user has joined.",
+ 
+        "response": {
+          "200": {
+            "success": true,
+            "data": [
+                {
+                    "_id": "66e83c41ca887ded8c50f42a",
+                    "name": "firstroom :)",
+                    "creator": "66e6e25ffd01824a7499a90a",
+                    "members": [
+                        {
+                            "_id": "66e6e25ffd01824a7499a90a",
+                            "username": "issam"
+                        },
+                        {
+                            "_id": "66e83de0ca887ded8c50f439",
+                            "username": "test"
+                        }
+                    ],
+                    "messages": [
+                        "66e849a2a2fe74a086a7228a",
+                        "66e849aea2fe74a086a7228e",
+                        "66e849b3a2fe74a086a72292",
+                        "66e849b6a2fe74a086a72296",
+                        "66e849b8a2fe74a086a7229a",
+                        "66e849faa2fe74a086a7229e",
+                        "66e849fea2fe74a086a722a2",
+                        "66ec81abda726180be88ce4f",
+                        "66ec81ccda726180be88ce53",
+                        "66ec81f0da726180be88ce57"
+                    ],
+                    "__v": 12
+                },
+                {
+                    "_id": "66e83d78ca887ded8c50f436",
+                    "name": "12345",
+                    "creator": "66e6e25ffd01824a7499a90a",
+                    "members": [
+                        {
+                            "_id": "66e6e25ffd01824a7499a90a",
+                            "username": "issam"
+                        }
+                    ],
+                    "messages": [],
+                    "__v": 1
+                }
+            ]
+        },
+          "500": { "message": "Error fetching chatrooms" }
+        }
+      },
+
+
+
+
+
+      {
+        "path": "/home/chatroom/search",
+        "method": "GET",
+        "description": "Search for chatrooms by name.",
+        "queryParameters": {
+          "name": "string (optional)"
+        },
+        "response": {
+          "200": { "success":true,"data":"the same like joinedroom" },
+          "500": {"success":false, "message": "Error searching chatrooms" }
+        }
+      },
+
+
+
+      {
+        "path": "/home/chatroom/create",
+        "method": "POST",
+        "description": "Create a new chatroom.",
+        "requestBody": {
+          "name": "string (required)"
+        },
+        "response": {
+          "201": { "success":true,"message": "Chatroom data" },
+          "400": { "success":false,"message": "Chatroom with this name already exists" },
+          "500": { "success":false,"message": "Error creating chatroom" }
+        }
+      },
+
+
+
+
+
+      {
+        "path": "/home/chatrooms/:chatroomID",
+        "method": "DELETE",
+        "description": "Delete a chatroom by ID (only by creator).",
+        "urlParameters": {
+          "chatroomID": "string (required)"
+        },
+
+        "response": {
+          "200": { "success":true,"message": "Chatroom deleted successfully" },
+          "403": { "success":false,"message": "User not authorized to delete this chatroom" },
+          "404": { "success":false,"message": "Chatroom not found" },
+          "500": { "success":false,"message": "Error deleting chatroom" }
+        }
+      },
+
+
+
+
+
+      {
+        "path": "/home/chatrooms/:chatroomID/join",
+        "method": "POST",
+        "description": "Join a chatroom by ID.",
+        "urlParameters": {
+          "chatroomID": "string (required)"
+
+        },
+        "response": {
+          "200": { "success":true,"message": "Joined chatroom successfully" },
+          "400": { "success":false,"message": "User already joined this chatroom" },
+          "404": { "success":false,"message": "Chatroom not found" },
+          "500": { "success":false,"message": "Error joining chatroom" }
+        }
+      },
+
+
+
+
+      {
+        "path": "/home/chatrooms/:chatroomID/quit",
+        "method": "POST",
+        "description": "Quit a chatroom by ID (not allowed if the user is the creator).",
+        "urlParameters": {
+          "chatroomID": "string (required)"
+        },
+
+        "response": {
+          "200": { "success":true,"message": "Quit chatroom successfully" },
+          "403": { "success":false,"message": "User not allowed to quit this chatroom" },
+          "404": { "success":false,"message": "Chatroom not found" },
+          "500": { "success":false,"message": "Error quitting chatroom" }
+        }
+      },
+
+
+
+
+      {
+        "path": "/home/message/:chatroomID/messages",
+        "method": "GET",
+        "description": "Get all messages for a specific chatroom.",
+        "urlParameters": {
+          "chatroomID": "string (required)"
+        },
+        "response": {
+          "200": {
+            "success": true,
+            "data": [
+                {
+                    "_id": "66e849a2a2fe74a086a7228a",
+                    "senderID": {
+                        "_id": "66e83de0ca887ded8c50f439",
+                        "username": "test"
+                    },
+                    "chatroomID": "66e83c41ca887ded8c50f42a",
+                    "content": "hello there !",
+                    "mediaURL": null,
+                    "timestamp": "2024-09-16T15:07:14.653Z",
+                    "__v": 0
+                },
+                {
+                    "_id": "66e849aea2fe74a086a7228e",
+                    "senderID": {
+                        "_id": "66e83de0ca887ded8c50f439",
+                        "username": "test"
+                    },
+                    "chatroomID": "66e83c41ca887ded8c50f42a",
+                    "content": "hello there !",
+                    "mediaURL": null,
+                    "timestamp": "2024-09-16T15:07:26.167Z",
+                    "__v": 0
+                },
+                {
+                    "_id": "66e849fea2fe74a086a722a2",
+                    "senderID": {
+                        "_id": "66e83de0ca887ded8c50f439",
+                        "username": "test"
+                    },
+                    "chatroomID": "66e83c41ca887ded8c50f42a",
+                    "content": "hey :) ",
+                    "mediaURL": null,
+                    "timestamp": "2024-09-16T15:08:46.014Z",
+                    "__v": 0
+                }
+            ]
+        },
+          "404": { "success":false,"message": "Chatroom not found" },
+          "500": { "success":false,"message": "Error fetching messages" }
+        }
+      },
+
+
+
+
+
+      {
+        "path": "/home/message/:chatroomID/sendmessage",
+        "method": "POST",
+        "description": "Send a new message to a chatroom.",
+        "urlParameters": {
+          "chatroomID": "string (required)"
+        },
+        "requestBody": {
+        
+          "content": "string (required)",
+          "mediaURL": "string (optional)"
+        },
+        "response": {
+          "201": {
+            "success": true,
+            "data": {
+                "senderID": "66e6e25ffd01824a7499a90a",
+                "chatroomID": "66e83c41ca887ded8c50f42a",
+                "content": "how are u doing ",
+                "mediaURL": null,
+                "_id": "66ec81f0da726180be88ce57",
+                "timestamp": "2024-09-19T19:56:32.045Z",
+                "__v": 0
+            }
+        },
+          "404": { "success":false,"message": "Chatroom not found" },
+          "500": { "success":false,"message": "Error sending message" }
+        }
+      }
+    ]
+  }
+  

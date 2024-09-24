@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatrooms Home</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <div class="container">
+        <!-- Search and Create Chatroom Section -->
+        <div class="top-section">
+            <!-- Search chatroom -->
+            <div class="search-create">
+                <div class="search">
+                    <input type="text" id="searchInput" placeholder="Search chatrooms...">
+                    <button onclick="searchChatrooms()">Search</button>
+                </div>
+                <!-- Create chatroom -->
+                <div class="create">
+                    <input type="text" id="createInput" placeholder="New chatroom name">
+                    <button onclick="createChatroom()">Create</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Joined Chatrooms Section -->
+        <div class="chatrooms-list" id="chatroomsList">
+            <!-- Example chatroom button (to be dynamically generated) -->
+            <!--
+            <div class="chatroom">
+                <div class="chatroom-info">
+                    <p class="chatroom-name">Chatroom Name</p>
+                    <p class="chatroom-creator">Creator: User</p>
+                </div>
+                <p class="chatroom-members">5 Members</p>
+            </div>
+            -->
+        </div>
+    </div>
+
+    <script src="scripts.js"></script> <!-- Link to your JavaScript file -->
+</body>
+</html>
