@@ -13,32 +13,32 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+// CORS configuration (only needed for development)
+if (process.env.NODE_ENV !== 'production') {
+    app.use(cors({
+        origin: 'http://localhost:3001',
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization']
+    }));
+}
+
 // Security middleware
 app.use(helmet());
 app.use(compression());
-
-// CORS configuration
-app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-        ? process.env.CLIENT_URL 
-        : 'http://localhost:3001',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
 
 // Parse JSON bodies
 app.use(express.json());
 
 // Session configuration
 app.use(session({
-    secret: process.env.SESSION_SECRET || "secret",
+    secret: "secret",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
+        secure: false,
         httpOnly: true,
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
@@ -46,24 +46,20 @@ app.use(session({
 // API routes
 app.use('/api', mainrouter);
 
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-    // Serve static files from the React app
-    app.use(express.static(path.join(__dirname, 'client/build')));
-    
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-    });
-}
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+// Handle React routing, return all requests to React app
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({
         status: 'error',
-        message: process.env.NODE_ENV === 'production' 
-            ? 'Internal server error' 
-            : err.message
+        message: err.message
     });
 });
 
