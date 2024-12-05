@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // mongodb uri atlas
-const uri = process.env.database_url;
+const uri = process.env.MONGODB_URI;
 
 const options = {
     useNewUrlParser: true,
