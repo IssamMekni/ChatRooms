@@ -78,66 +78,66 @@ export default function ChatRoom({ room }) {
     }
 
     return (
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Paper elevation={2} sx={{ p: 2, mb: 2 }}>
+        <Box sx={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            overflow: 'hidden'
+        }}>
+            <Paper 
+                elevation={1} 
+                sx={{ 
+                    p: 2,
+                    borderBottom: 1,
+                    borderColor: 'divider'
+                }}
+            >
                 <Typography variant="h6">{room.name}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                    {room.members.length} members
+                    {room.members?.length || 0} members
                 </Typography>
             </Paper>
 
-            <Paper
-                sx={{
-                    flex: 1,
-                    mb: 2,
-                    overflow: 'auto',
-                    maxHeight: 'calc(100vh - 250px)',
-                }}
-            >
+            <Box sx={{ 
+                flex: 1,
+                overflow: 'auto',
+                display: 'flex',
+                flexDirection: 'column-reverse',
+                p: 2
+            }}>
                 <List>
                     {messages.map((message) => (
                         <ListItem
                             key={message._id}
                             sx={{
+                                display: 'flex',
                                 flexDirection: 'column',
-                                alignItems:
-                                    message.senderID._id === user.id
-                                        ? 'flex-end'
-                                        : 'flex-start',
-                                mb: 1,
+                                alignItems: message.senderID._id === user.id ? 'flex-end' : 'flex-start',
+                                p: 0.5
                             }}
                         >
-                            <Typography
-                                variant="caption"
-                                color="text.secondary"
-                                sx={{
-                                    mb: 0.5,
-                                    alignSelf: message.senderID._id === user.id ? 'flex-end' : 'flex-start'
-                                }}
-                            >
+                            <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5 }}>
                                 {message.senderID.username}
                             </Typography>
-                            <ListItemText
-                                primary={message.content}
+                            <Paper
+                                elevation={1}
                                 sx={{
-                                    m: 0,
-                                    '.MuiListItemText-primary': {
-                                        backgroundColor:
-                                            message.senderID._id === user.id
-                                                ? 'primary.light'
-                                                : 'grey.100',
-                                        padding: '8px 12px',
-                                        borderRadius: '12px',
-                                        display: 'inline-block',
-                                        color: message.senderID._id === user.id ? 'white' : 'inherit',
-                                    }
+                                    p: '8px 12px',
+                                    maxWidth: '70%',
+                                    bgcolor: message.senderID._id === user.id ? 'primary.main' : 'grey.100',
+                                    color: message.senderID._id === user.id ? 'common.white' : 'text.primary',
+                                    borderRadius: '12px'
                                 }}
-                            />
+                            >
+                                <Typography variant="body1">
+                                    {message.content}
+                                </Typography>
+                            </Paper>
                         </ListItem>
                     ))}
                     <div ref={messagesEndRef} />
                 </List>
-            </Paper>
+            </Box>
 
             <Paper
                 component="form"
@@ -145,8 +145,9 @@ export default function ChatRoom({ room }) {
                 sx={{
                     p: 2,
                     display: 'flex',
-                    alignItems: 'center',
                     gap: 1,
+                    borderTop: 1,
+                    borderColor: 'divider'
                 }}
             >
                 <TextField
@@ -163,8 +164,17 @@ export default function ChatRoom({ room }) {
                     }}
                     multiline
                     maxRows={3}
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            borderRadius: '20px'
+                        }
+                    }}
                 />
-                <IconButton type="submit" color="primary">
+                <IconButton 
+                    type="submit" 
+                    color="primary"
+                    disabled={!newMessage.trim()}
+                >
                     <SendIcon />
                 </IconButton>
             </Paper>

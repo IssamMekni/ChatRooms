@@ -12,6 +12,7 @@ import {
     DialogActions,
     IconButton,
     Box,
+    Divider,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
@@ -108,80 +109,114 @@ export default function ChatRoomList({ onRoomSelect, selectedRoom }) {
     };
 
     return (
-        <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-            <Box sx={{ p: 2, display: 'flex', alignItems: 'center' }}>
-                <TextField
-                    size="small"
-                    placeholder="Search rooms..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    sx={{ flex: 1, mr: 1 }}
-                />
-                <IconButton onClick={handleSearch}>
-                    <SearchIcon />
-                </IconButton>
-                <IconButton onClick={() => setOpenNewRoom(true)}>
-                    <AddIcon />
-                </IconButton>
+        <Box sx={{ 
+            height: '100%', 
+            display: 'flex', 
+            flexDirection: 'column',
+            bgcolor: 'background.paper'
+        }}>
+            <Box sx={{ 
+                p: 2, 
+                display: 'flex', 
+                flexDirection: 'column',
+                gap: 1
+            }}>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                    <TextField
+                        size="small"
+                        placeholder="Search rooms..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        sx={{ flex: 1 }}
+                        InputProps={{
+                            startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />,
+                        }}
+                    />
+                    <IconButton 
+                        color="primary"
+                        onClick={() => setOpenNewRoom(true)}
+                    >
+                        <AddIcon />
+                    </IconButton>
+                </Box>
             </Box>
 
-            <List>
-                {rooms.map((room) => (
-                    <ListItem
-                        key={room._id}
-                        selected={selectedRoom?._id === room._id}
-                        onClick={() => onRoomSelect(room)}
-                        secondaryAction={
-                            <>
-                                {room.creator !== user.id && (
-                                    joinedRooms.has(room._id) ? (
-                                        <Button
-                                            variant="contained"
-                                            color="error"
-                                            size="small"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleQuitRoom(room._id);
-                                            }}
-                                            sx={{ mr: 1 }}
-                                        >
-                                            Quit
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            size="small"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleJoinRoom(room._id);
-                                            }}
-                                            sx={{ mr: 1 }}
-                                        >
-                                            Join
-                                        </Button>
-                                    )
-                                )}
+            <Divider />
+
+            <List sx={{ 
+                flex: 1, 
+                overflow: 'auto',
+                '& .MuiListItem-root': {
+                    borderBottom: '1px solid',
+                    borderColor: 'divider'
+                }
+            }}>
+                {rooms
+                    .filter(room => room.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                    .map((room) => (
+                        <ListItem
+                            key={room._id}
+                            selected={selectedRoom?._id === room._id}
+                            onClick={() => onRoomSelect(room)}
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'stretch',
+                                gap: 1,
+                                py: 1,
+                                '&:hover': {
+                                    bgcolor: 'action.hover',
+                                },
+                                '&.Mui-selected': {
+                                    bgcolor: 'primary.light',
+                                    '&:hover': {
+                                        bgcolor: 'primary.light',
+                                    },
+                                },
+                            }}
+                        >
+                            <Box sx={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'space-between',
+                                width: '100%'
+                            }}>
+                                <ListItemText
+                                    primary={room.name}
+                                    secondary={`Created by: ${room.creator === user.id ? 'You' : room.creatorName}`}
+                                />
                                 {room.creator === user.id && (
                                     <IconButton
                                         edge="end"
+                                        color="error"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleDeleteRoom(room._id);
                                         }}
+                                        size="small"
                                     >
                                         <DeleteIcon />
                                     </IconButton>
                                 )}
-                            </>
-                        }
-                    >
-                        <ListItemText
-                            primary={room.name}
-                            secondary={`Created by: ${room.creator === user.id ? 'You' : room.creatorName}`}
-                        />
-                    </ListItem>
-                ))}
+                            </Box>
+                            {room.creator !== user.id && (
+                                <Button
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        joinedRooms.has(room._id) 
+                                            ? handleQuitRoom(room._id)
+                                            : handleJoinRoom(room._id);
+                                    }}
+                                    color={joinedRooms.has(room._id) ? "error" : "primary"}
+                                    fullWidth
+                                >
+                                    {joinedRooms.has(room._id) ? 'Quit' : 'Join'}
+                                </Button>
+                            )}
+                        </ListItem>
+                    ))}
             </List>
 
             <Dialog open={openNewRoom} onClose={() => setOpenNewRoom(false)}>
@@ -191,6 +226,7 @@ export default function ChatRoomList({ onRoomSelect, selectedRoom }) {
                         autoFocus
                         margin="dense"
                         label="Room Name"
+                        type="text"
                         fullWidth
                         value={newRoomName}
                         onChange={(e) => setNewRoomName(e.target.value)}
