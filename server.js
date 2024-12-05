@@ -11,8 +11,9 @@ const { Cookie } = require('express-session');
 require('dotenv').config();
 
 
-const port = process.env.port;
-const app=express();
+const port = process.env.PORT ;
+const app = express();
+
 //parse json
 app.use(express.json());
 
@@ -22,22 +23,21 @@ app.use(session({
     resave: false,
     saveUninitialized:true,
     Cookie:{secure:false}
-
 }));
+
 // using routers
-app.use(mainrouter);
+app.use('/api', mainrouter);
 
-// show the front
-app.use(express.static(path.join(__dirname, 'public')));
-
-
+// Serve static files from the React app in production
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'client/build')));
+    
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    });
+}
 
 app.listen(port, async ()=>{
     console.log("server is running on port " + port);
-    connectDB();
-   
-
-
-}); 
-
-
+    await connectDB();
+});
