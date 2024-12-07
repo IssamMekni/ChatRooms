@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
+import EmojiPicker from 'emoji-picker-react';
 import {
     Box,
     Paper,
@@ -12,16 +13,22 @@ import {
     Button,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import { useAuth } from '../context/AuthContext';
 
 export default function ChatRoom({ room }) {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const { user } = useAuth();
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    const handleEmojiClick = (emojiObject) => {
+        setNewMessage(prevInput => prevInput + emojiObject.emoji);
     };
 
     const fetchMessages = useCallback(async () => {
@@ -54,7 +61,8 @@ export default function ChatRoom({ room }) {
                 content: newMessage,
             });
             setNewMessage('');
-            await fetchMessages(); // Immediately fetch new messages after sending
+            setShowEmojiPicker(false); // Close emoji picker
+            await fetchMessages();
         } catch (error) {
             console.error('Error sending message:', error);
         }
@@ -82,7 +90,8 @@ export default function ChatRoom({ room }) {
             display: 'flex',
             flexDirection: 'column',
             height: '100%',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            position: 'relative'
         }}>
             <Paper 
                 elevation={1} 
@@ -117,7 +126,7 @@ export default function ChatRoom({ room }) {
                             }}
                         >
                             <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5 }}>
-                                {message.senderID.username}
+                                {message.senderID.username} - {new Date(message.timestamp).toLocaleString()}
                             </Typography>
                             <Paper
                                 elevation={1}
@@ -152,8 +161,8 @@ export default function ChatRoom({ room }) {
             >
                 <TextField
                     fullWidth
-                    size="small"
-                    placeholder="Type a message..."
+                    variant="outlined"
+                    placeholder="Type a message"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => {
@@ -170,14 +179,25 @@ export default function ChatRoom({ room }) {
                         }
                     }}
                 />
-                <IconButton 
-                    type="submit" 
+                <IconButton
                     color="primary"
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                >
+                    <EmojiEmotionsIcon />
+                </IconButton>
+                <IconButton
+                    color="primary"
+                    type="submit"
                     disabled={!newMessage.trim()}
                 >
                     <SendIcon />
                 </IconButton>
             </Paper>
+            {showEmojiPicker && (
+                <Box sx={{ position: 'absolute', bottom: '70px', right: '20px' }}>
+                    <EmojiPicker onEmojiClick={handleEmojiClick} />
+                </Box>
+            )}
         </Box>
     );
 }
