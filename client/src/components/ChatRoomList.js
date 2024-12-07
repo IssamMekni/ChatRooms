@@ -183,9 +183,13 @@ export default function ChatRoomList({ onRoomSelect, selectedRoom }) {
                             }}>
                                 <ListItemText
                                     primary={room.name}
-                                    secondary={`Created by: ${room.creator === user.id ? 'You' : room.creatorName}`}
+                                    secondary={
+                                        room.creator.username === user.username
+                                            ? 'Creator: You'
+                                            : `Creator: ${room.creator.username}`
+                                    }
                                 />
-                                {room.creator === user.id && (
+                                {room.creator.username === user.username && (
                                     <IconButton
                                         edge="end"
                                         color="error"
@@ -199,7 +203,7 @@ export default function ChatRoomList({ onRoomSelect, selectedRoom }) {
                                     </IconButton>
                                 )}
                             </Box>
-                            {room.creator !== user.id && (
+                            {room.creator.username !== user.username && (
                                 <Button
                                     variant="outlined"
                                     size="small"

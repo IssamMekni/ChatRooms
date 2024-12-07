@@ -17,7 +17,8 @@ exports.getListJoinedRoom = async (req, res) => {
 exports.searchForRoom = async (req, res) => {
     try {
         const { name } = req.query;
-        const chatrooms = await ChatRoom.find({ name: new RegExp(name, "i") });
+        const chatrooms = await ChatRoom.find({ name: new RegExp(name, "i") })
+            .populate("creator", "username"); // Populate creator's username
         res.status(200).json({ success: true, data: chatrooms });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
