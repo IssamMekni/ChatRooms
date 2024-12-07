@@ -24,7 +24,14 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Security middleware
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            imgSrc: ["'self'", 'data:', 'https://cdn.jsdelivr.net']
+        }
+    }
+}));
 app.use(compression());
 
 // Parse JSON bodies
