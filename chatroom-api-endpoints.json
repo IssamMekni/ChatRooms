@@ -3,7 +3,7 @@
       
         
       {
-        "path": "/auth/register",
+        "path": "/api/auth/register",
         "method": "POST",
         "description": "Register a new user.",
         "requestBody": {
@@ -21,7 +21,7 @@
 
 
       {
-        "path": "/auth/login",
+        "path": "/api/auth/login",
         "method": "POST",
         "description": "Log in an existing user.",
         "requestBody": {
@@ -40,7 +40,7 @@
 
 
       {
-        "path": "/home/chatroom/joinedroom",
+        "path": "/api/home/chatroom/joinedroom",
         "method": "GET",
         "description": "Get a list of chatrooms the user has joined.",
  
@@ -100,7 +100,7 @@
 
 
       {
-        "path": "/home/chatroom/search",
+        "path": "/api/home/chatroom/search",
         "method": "GET",
         "description": "Search for chatrooms by name.",
         "queryParameters": {
@@ -115,7 +115,7 @@
 
 
       {
-        "path": "/home/chatroom/create",
+        "path": "/api/home/chatroom/create",
         "method": "POST",
         "description": "Create a new chatroom.",
         "requestBody": {
@@ -133,7 +133,7 @@
 
 
       {
-        "path": "/home/chatrooms/:chatroomID",
+        "path": "/api/home/chatrooms/:chatroomID",
         "method": "DELETE",
         "description": "Delete a chatroom by ID (only by creator).",
         "urlParameters": {
@@ -153,7 +153,7 @@
 
 
       {
-        "path": "/home/chatrooms/:chatroomID/join",
+        "path": "/api/home/chatrooms/:chatroomID/join",
         "method": "POST",
         "description": "Join a chatroom by ID.",
         "urlParameters": {
@@ -172,7 +172,7 @@
 
 
       {
-        "path": "/home/chatrooms/:chatroomID/quit",
+        "path": "/api/home/chatrooms/:chatroomID/quit",
         "method": "POST",
         "description": "Quit a chatroom by ID (not allowed if the user is the creator).",
         "urlParameters": {
@@ -191,7 +191,7 @@
 
 
       {
-        "path": "/home/message/:chatroomID/messages",
+        "path": "/api/home/message/:chatroomID/messages",
         "method": "GET",
         "description": "Get all messages for a specific chatroom.",
         "urlParameters": {
@@ -249,7 +249,7 @@
 
 
       {
-        "path": "/home/message/:chatroomID/sendmessage",
+        "path": "/api/home/message/:chatroomID/sendmessage",
         "method": "POST",
         "description": "Send a new message to a chatroom.",
         "urlParameters": {
